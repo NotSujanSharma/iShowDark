@@ -49,12 +49,12 @@ export function CheckoutForm() {
 				return;
 			}
 
-			// Initialize transaction with Saleor
+			// Initialize transaction with Saleor - use base currency units (dollars)
 			console.log("Saleor transaction initialization:", {
 				checkoutId: checkout.id,
 				amount: checkout.totalPrice.gross.amount,
 				currency: checkout.totalPrice.gross.currency,
-				message: "Saleor expects amount in base currency units (dollars)",
+				message: "Using base currency units (dollars) as expected by Saleor",
 			});
 			
 			const initializeResult = await transactionInitialize({
