@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	overflow-x: hidden;
+}
+
+.typewriter {
+            font-family: 'Courier New', monospace;
+            /* font-size: 2em; */
+            /* font-weight: bold; */
+            /* color: #333; */
+            border-right: 2px solid #003cff;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: 
+                typing 3.5s steps(30, end),
+                blink-caret 1s step-end infinite;
+            /* max-width: fit-content; */
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #0d00ff; }
+        }
+
+        /* Alternative blinking cursor */
+      
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
