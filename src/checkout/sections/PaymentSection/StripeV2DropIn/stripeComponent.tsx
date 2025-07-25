@@ -40,21 +40,21 @@ export const StripeComponent = ({ config }: { config: StripeConfig }) => {
 		return <div>Loading payment system...</div>;
 	}
 
-	// Use base currency units (dollars) for both Stripe Elements and Saleor 
-	// The Saleor Stripe app expects amounts in base currency units and will handle Stripe API conversion
-	const amount = checkout.totalPrice.gross.amount;
+	// Use cents for Stripe Elements (as required by Stripe API), base currency units for Saleor
+	const amountInCents = Math.round(checkout.totalPrice.gross.amount * 100);
 	const currency = checkout.totalPrice.gross.currency?.toLowerCase() || "usd";
 	
 	// Debug logging for amount formatting
 	console.log("Stripe Elements configuration:", {
-		amount: amount,
+		checkoutAmountDollars: checkout.totalPrice.gross.amount,
+		stripeAmountCents: amountInCents,
 		currency: currency,
-		message: "Using base currency units (dollars) to match Saleor transaction initialization",
+		message: "Stripe Elements requires amount in cents, but Saleor uses dollars",
 	});
 	
 	const stripeOptions: StripeElementsOptions = {
 		mode: "payment",
-		amount,
+		amount: amountInCents,
 		appearance: { theme: "stripe" },
 		currency,
 	};
