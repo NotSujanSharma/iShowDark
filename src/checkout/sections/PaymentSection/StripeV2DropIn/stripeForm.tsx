@@ -49,17 +49,9 @@ export function CheckoutForm() {
 				return;
 			}
 
-			// Initialize transaction with Saleor - let Saleor determine amount from checkout
-			console.log("Saleor transaction initialization:", {
-				checkoutId: checkout.id,
-				checkoutTotal: checkout.totalPrice.gross.amount,
-				currency: checkout.totalPrice.gross.currency,
-				message: "Not specifying amount - letting Saleor determine from checkout total",
-			});
-			
+			// Initialize transaction with Saleor (amount determined automatically from checkout total)
 			const initializeResult = await transactionInitialize({
 				checkoutId: checkout.id,
-				// amount: removed to let Saleor calculate from checkout total
 				paymentGateway: {
 					id: stripeV2GatewayId,
 					data: {
@@ -79,15 +71,6 @@ export function CheckoutForm() {
 			}
 
 			const transactionData = initializeResult.data?.transactionInitialize;
-			console.log("Transaction initialization result:", {
-				success: !initializeResult.error && !transactionData?.errors?.length,
-				transactionId: transactionData?.transaction?.id,
-				hasData: !!transactionData?.data,
-				dataKeys: transactionData?.data ? Object.keys(transactionData.data) : [],
-				errors: transactionData?.errors,
-				rawResponse: transactionData,
-			});
-			
 			if (!transactionData || transactionData.errors?.length) {
 				const errorMessages = transactionData?.errors?.map((err) => ({ message: err.message || "Error" }));
 				showCustomErrors(errorMessages || [{ message: "Transaction initialization failed" }]);
@@ -113,14 +96,6 @@ export function CheckoutForm() {
 			sessionStorage.setItem("transactionId", transactionId);
 
 			// Confirm the payment with Stripe
-			console.log("Stripe confirmPayment call:", {
-				clientSecret: clientSecret,
-				transactionId: transactionId,
-				checkoutTotal: checkout.totalPrice.gross.amount,
-				currency: checkout.totalPrice.gross.currency,
-				message: "About to confirm payment with Stripe",
-			});
-			
 			const { error: confirmError } = await stripe.confirmPayment({
 				elements,
 				clientSecret,
@@ -145,12 +120,6 @@ export function CheckoutForm() {
 			});
 
 			if (confirmError) {
-				console.log("Stripe confirmPayment error:", {
-					error: confirmError,
-					errorType: confirmError.type,
-					message: confirmError.message,
-					checkoutTotal: checkout.totalPrice.gross.amount,
-				});
 				setIsLoading(false);
 				if (confirmError.type === "card_error" || confirmError.type === "validation_error") {
 					showCustomErrors([{ message: confirmError.message ?? "Payment failed" }]);
@@ -158,10 +127,6 @@ export function CheckoutForm() {
 					showCustomErrors([{ message: "An unexpected error occurred with your payment" }]);
 				}
 			} else {
-				console.log("Stripe confirmPayment success:", {
-					message: "Payment confirmed successfully",
-					checkoutTotal: checkout.totalPrice.gross.amount,
-				});
 				await onCheckoutComplete();
 			}
 
