@@ -40,11 +40,12 @@ export const StripeComponent = ({ config }: { config: StripeConfig }) => {
 		return <div>Loading payment system...</div>;
 	}
 
-	const amount = Math.round(checkout.totalPrice.gross.amount * 100);
+	const amountInCents = Math.round(checkout.totalPrice.gross.amount * 100);
 	const currency = checkout.totalPrice.gross.currency?.toLowerCase() || "usd";
+	
 	const stripeOptions: StripeElementsOptions = {
 		mode: "payment",
-		amount,
+		amount: amountInCents,
 		appearance: { theme: "stripe" },
 		currency,
 	};

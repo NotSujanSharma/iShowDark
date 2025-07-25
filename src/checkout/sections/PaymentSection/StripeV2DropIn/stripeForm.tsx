@@ -49,10 +49,9 @@ export function CheckoutForm() {
 				return;
 			}
 
-			// Initialize transaction with Saleor
+			// Initialize transaction with Saleor (amount determined automatically from checkout total)
 			const initializeResult = await transactionInitialize({
 				checkoutId: checkout.id,
-				amount: checkout.totalPrice.gross.amount,
 				paymentGateway: {
 					id: stripeV2GatewayId,
 					data: {
