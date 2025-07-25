@@ -49,17 +49,17 @@ export function CheckoutForm() {
 				return;
 			}
 
-			// Initialize transaction with Saleor - use base currency units (dollars)
+			// Initialize transaction with Saleor - let Saleor determine amount from checkout
 			console.log("Saleor transaction initialization:", {
 				checkoutId: checkout.id,
-				amount: checkout.totalPrice.gross.amount,
+				checkoutTotal: checkout.totalPrice.gross.amount,
 				currency: checkout.totalPrice.gross.currency,
-				message: "Using base currency units (dollars) as expected by Saleor",
+				message: "Not specifying amount - letting Saleor determine from checkout total",
 			});
 			
 			const initializeResult = await transactionInitialize({
 				checkoutId: checkout.id,
-				amount: checkout.totalPrice.gross.amount,
+				// amount: removed to let Saleor calculate from checkout total
 				paymentGateway: {
 					id: stripeV2GatewayId,
 					data: {
