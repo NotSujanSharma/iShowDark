@@ -42,6 +42,15 @@ export const StripeComponent = ({ config }: { config: StripeConfig }) => {
 
 	const amount = Math.round(checkout.totalPrice.gross.amount * 100);
 	const currency = checkout.totalPrice.gross.currency?.toLowerCase() || "usd";
+	
+	// Debug logging for amount formatting
+	console.log("Stripe Elements configuration:", {
+		originalAmount: checkout.totalPrice.gross.amount,
+		stripeAmount: amount,
+		currency: currency,
+		message: "Stripe Elements expects amount in smallest currency unit (cents)",
+	});
+	
 	const stripeOptions: StripeElementsOptions = {
 		mode: "payment",
 		amount,

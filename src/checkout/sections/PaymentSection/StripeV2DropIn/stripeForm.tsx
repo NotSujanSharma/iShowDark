@@ -50,6 +50,13 @@ export function CheckoutForm() {
 			}
 
 			// Initialize transaction with Saleor
+			console.log("Saleor transaction initialization:", {
+				checkoutId: checkout.id,
+				amount: checkout.totalPrice.gross.amount,
+				currency: checkout.totalPrice.gross.currency,
+				message: "Saleor expects amount in base currency units (dollars)",
+			});
+			
 			const initializeResult = await transactionInitialize({
 				checkoutId: checkout.id,
 				amount: checkout.totalPrice.gross.amount,
@@ -72,6 +79,13 @@ export function CheckoutForm() {
 			}
 
 			const transactionData = initializeResult.data?.transactionInitialize;
+			console.log("Transaction initialization result:", {
+				success: !initializeResult.error && !transactionData?.errors?.length,
+				transactionId: transactionData?.transaction?.id,
+				data: transactionData?.data,
+				errors: transactionData?.errors,
+			});
+			
 			if (!transactionData || transactionData.errors?.length) {
 				const errorMessages = transactionData?.errors?.map((err) => ({ message: err.message || "Error" }));
 				showCustomErrors(errorMessages || [{ message: "Transaction initialization failed" }]);
